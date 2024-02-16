@@ -17,3 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::resource('redirects', RedirectController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+
+Route::prefix('redirects/{redirect}')->group(function () {
+    Route::get('/stats', [StatsController::class, 'show']);
+    Route::get('/logs', [LogsController::class, 'show']);
+});

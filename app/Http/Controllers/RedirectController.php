@@ -8,7 +8,7 @@ class RedirectController extends Controller
 {
    public function createRedirect($redirect)
    {
-       return redirect()->away($redirect);
+       //return redirect()->away($redirect);
 
    }
 }

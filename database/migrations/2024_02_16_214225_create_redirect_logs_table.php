@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('user_agent');
             $table->string('header');
             $table->datetime('data_access')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
