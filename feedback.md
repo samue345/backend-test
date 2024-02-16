@@ -4,19 +4,19 @@ Esse documento visa coletar feedbacks sobre o teste de desenvolvimento. Desde o 
 ## Antes de Iniciar o Teste
 
 1 - Fale sobre suas primeiras impressões do Teste:
-> Resposta
+> De ínicio achei um pouco confuso
 
 2 - Tempo estimado para o teste:
-> Resposta
+> 2 dias
 
 3 - Qual parte você no momento considera mais difícil?
-> Resposta
+> Talvez a parte de estatísticas de acesso
 
 4 - Qual parte você no momento considera que levará mais tempo?
-> Resposta
+> Talvez os testes
 
 5 - Por onde você pretende começar?
-> Resposta
+> pelo redirecionamento para URl de destino
 
 
 ## Após o Teste
