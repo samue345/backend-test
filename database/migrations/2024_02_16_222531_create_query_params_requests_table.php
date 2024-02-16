@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('redirect_logs', function (Blueprint $table) {
+        Schema::create('query_params_requests', function (Blueprint $table) {
             $table->id();
-            $table->integer('ip_request');
-            $table->string('user_agent');
-            $table->string('header');
-            $table->datetime('data_access')->nullable();
+            $table->unsignedBigInteger('redirect_id');
+            $table->foreign('redirect_id')->references('id')->on('redirect_logs')->onDelete('cascade');;
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('redirect_logs');
+        Schema::dropIfExists('query_params_requests');
     }
 };
