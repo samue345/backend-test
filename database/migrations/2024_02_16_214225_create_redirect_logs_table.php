@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('redirect_logs', function (Blueprint $table) {
             $table->id();
-            $table->integer('ip_request');
+            $table->string('ip_request', 15);
             $table->string('user_agent');
-            $table->string('header');
-            $table->datetime('data_access')->nullable();
+            $table->string('header_refer')->nullable();
+            $table->datetime('date_access')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

@@ -21,6 +21,9 @@
         </style>
     </head>
     <body class="antialiased">
+    <form action="/r/https://www.youtube.com">
+      <button type="submit">Submit</button>
+    </form>
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
             @if (Route::has('login'))
                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
@@ -69,6 +72,7 @@
                             <div class="ml-12">
                                 <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
                                     Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
+                                    
                                 </div>
                             </div>
                         </div>
