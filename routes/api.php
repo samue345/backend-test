@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\RedirectsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::resource('redirects', RedirectController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+Route::resource('redirects', RedirectsController::class);
 
-Route::prefix('redirects/{redirect}')->group(function () {
-    Route::get('/stats', [StatsController::class, 'show']);
-    Route::get('/logs', [LogsController::class, 'show']);
+
+Route::prefix('redirects')->group(function () {
+    Route::get('/{redirect}/stats', [RedirectsController::class, 'showStats'])->name('redirects.stats');
+    Route::get('/{redirect}/logs', [RedirectsController::class, 'showLogs'])->name('redirects.logs');
 });

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('ip_request', 15);
             $table->string('user_agent');
+            $table->string('url_destino');
             $table->string('header_refer')->nullable();
             $table->datetime('date_access')->nullable();
             $table->boolean('status')->default(true);

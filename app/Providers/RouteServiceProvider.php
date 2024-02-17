@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\RedirectLog;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Vinkla\Hashids\Facades\Hashids;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -35,6 +37,20 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        Route::bind('redirect', function ($value) {
+            $id = Hashids::decode($value);
+
+            if (!isset($id[0])) {
+                abort(404);
+            }
+
+            $redirect = RedirectLog::find($id[0]);
+            
+            return $redirect;
+
+        });
+
         $this->configureRateLimiting();
 
         $this->routes(function () {

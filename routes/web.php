@@ -16,6 +16,7 @@ use App\Http\Controllers\RedirectController;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/r/{redirect}', [RedirectController::class, 'createRedirect'])->where('redirect', '.*');
+Route::get('/view/redirects', [RedirectController::class, 'index']);
