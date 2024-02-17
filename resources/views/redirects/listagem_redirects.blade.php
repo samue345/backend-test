@@ -18,8 +18,8 @@
 <body>
     <article>
         <h1>Listagem de redirects</h1>
-        @foreach ($redirect_logs as $redirect)
-        <a href="{{ route('redirects.stats', $redirect->code) }}">
+        @foreach ($registers_redirects as $redirect)
+        <a href="{{ route('r.redirect', $redirect->code) }}">
         <section>
             <p>Código: {{ $redirect->code }}</p>
             <p>Status: {{ $redirect->status }}</p>

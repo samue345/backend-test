@@ -13,11 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('query_params_requests', function (Blueprint $table) {
+        Schema::create('redirect_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('redirect_id');
-            $table->foreign('redirect_id')->references('id')->on('redirect_logs')->onDelete('cascade');;
-            $table->timestamps();
+            $table->foreignId('redirect_id')->constrained('redirects');
+            $table->string('ip_request', 15);
+            $table->string('user_agent');
+            $table->string('header_refer')->nullable();
+            $table->timestamp('date_access');
         });
     }
 
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('query_params_requests');
+        Schema::dropIfExists('redirect_logs');
     }
 };

@@ -11,7 +11,6 @@ class QueryParamsRequest extends Model
     protected $fillable = ['id', 'redirect_id'];
 
     public function RedirectLog(){
-        return $this->belongsTo(RedirectLog::class, 'redirect_id');
+        return $this->belongsTo(RedirectLog::class, 'redirectlog_id');
     }
-
 }

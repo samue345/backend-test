@@ -26,7 +26,7 @@
                 justify-content: center;
                 align-items: center;
             }
-            section > a{
+            section a{
                 padding: 10px;
                 background-color: blue;
                 border-radius: 20px;
@@ -38,14 +38,10 @@
     </head>
     <body>
         <main>
-     
             <section id="caixa_redirects">
-              <a href="/view/redirects">Listagem de redirects</a>
-              <form action="/r/https://www.youtube.com">
-               <button type="submit">Submit</button>
-             </form>
+              <a href="{{ route('redirects.index') }}">Listagem de redirects</a>
+              <a href="{{ route('redirects.create') }}">Criar redirect</a>
             </section>
-
         </main>
     </body>
 </html>
