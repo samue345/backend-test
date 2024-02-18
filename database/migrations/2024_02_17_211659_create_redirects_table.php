@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('url_destino');
             $table->boolean('status')->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

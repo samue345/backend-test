@@ -56,10 +56,18 @@ class RedirectsController extends Controller
     
     }
 
-    public function destroy(RedirectLog $redirect)
+    public function destroy(Redirect $redirect)
     {
         return $redirect;
-        // Lógica para excluir o registro
+        
+        if($redirect->status !== 0)
+        {
+            $redirect->status = 0;
+            $redirect->save();
+            $redirect->delete();     
+        }
+        $redirect->save();
+
     }
     public function showStats(Redirect $redirect)
     {
