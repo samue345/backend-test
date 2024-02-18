@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('query_params_requests', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('redirectlog_id');
-            $table->string('params');
+            $table->string('key');
+            $table->string('value');
             $table->foreign('redirectlog_id')->references('id')->on('redirect_logs')->onDelete('cascade');
             $table->timestamps();
         });

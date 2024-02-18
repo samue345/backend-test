@@ -7,35 +7,53 @@ use App\Models\RedirectLog;
 use App\Models\Redirect;
 use App\Models\QueryParamsRequest;
 use App\Http\Requests\RequestRedirect;
+use Illuminate\Support\Facades\DB;
 
 
 class RedirectController extends Controller
 {
-   public function createRedirect(Request $request, Redirect $redirect)
-   {
+    public function createRedirect(Request $request, Redirect $redirect)
+    {
+        $parsedRedirectUrl = parse_url($redirect->url_destino);
+        $existingQueryParams = [];
 
-        $parsed_redirect_url = parse_url($redirect->url_destino);
-        $existing_query_params = [];
 
+        if (isset($parsedRedirectUrl['query'])) 
+            parse_str($parsedRedirectUrl['query'], $existingQueryParams);
+        
     
-        if (isset($parsed_redirect_url['query'])) 
-            parse_str($parsed_redirect_url['query'], $existing_query_params);
-
-        $merged_query_params = array_merge(
-            $existing_query_params,
+        $mergedQueryParams = array_merge(
+            $existingQueryParams,
             $request->query() ?? []
         );
-
-        $filtered_query_Params = array_filter($merged_query_params, function ($value) {
+    
+        $filteredQueryParams = array_filter($mergedQueryParams, function ($value) {
             return $value !== null && $value !== '';
         });
+    
+        $urlRedirect = $parsedRedirectUrl['scheme'] . '://' . $parsedRedirectUrl['host'] . $parsedRedirectUrl['path'];
+    
+        if (!empty($filteredQueryParams)) 
+            $urlRedirect .= '?' . http_build_query($filteredQueryParams);
+        
+        try {
+            
+            DB::beginTransaction();
+            $this->logRedirectRequest($request, $redirect, $mergedQueryParams);
+            DB::commit();
+        } 
+        catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+        
+    
 
-        $urlRedirect = $parsed_redirect_url['scheme'] . '://' . $parsed_redirect_url['host'] . $parsed_redirect_url['path'];
-
-        if (!empty($filtered_query_Params)) 
-          $urlRedirect .= '?' . http_build_query($filtered_query_Params);
-
-
+        return redirect()->to($urlRedirect);
+    }
+    
+    private function logRedirectRequest(Request $request, Redirect $redirect, array $queryParameters)
+    {
         $request_log = new RedirectLog;
 
         $request_log->redirect_id = $redirect->id;
@@ -45,37 +63,20 @@ class RedirectController extends Controller
         $request_log->date_access = now();
         $request_log->save();
 
-
-        if (!empty($merged_query_params)) 
+        if (!empty($queryParameters)) 
         {
-            foreach ($merged_query_params as $key => $value) 
+            foreach ($queryParameters as $key => $value) 
             {
-                $parameter = new QueryParamsRequest([
-                    'redirect_id' => $redirect->id,
-                    'key' => $key,
-                    'value' => $value,
-                ]);
-        
+                $parameter = new QueryParamsRequest();
+                $parameter->redirectlog_id = $request_log->id;
+                $parameter->key = $key;
+                $parameter->value = $value;
                 $parameter->save();
             }
         }
 
-
-
-
-
-        
-
-        
-        
-
-        //return redirect()->to($urlRedirect);
+    }
     
-
-
-   
-
-   }
 
 
   

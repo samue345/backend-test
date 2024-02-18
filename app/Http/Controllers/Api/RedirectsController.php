@@ -80,8 +80,7 @@ class RedirectsController extends Controller
 
     
         $stats = RedirectLog::select('id', 'redirect_id', 'ip_request', 'user_agent', 'date_access', 'header_refer')
-        ->where('redirect_id', $redirect->id)
-        ->with('Redirect')
+        ->where('redirect_id', $redirect->id)->with('Redirect')
         ->get();
 
         $grouped = $stats->groupBy('header_refer');
@@ -89,30 +88,28 @@ class RedirectsController extends Controller
         $top_referrer = optional($top_referrer)->header_refer;
 
 
+        $response = [
 
-        $accesses_last_10_days = [
-            [
-               'date' => now()->addDays(-10)->format('Y-m-d'),
-               'total' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->count(),
-               'unique' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->pluck('ip_request')->unique()->count(),
-           ],
+            'total_accesses' => $stats->count(),
+            'unique_ips' => $stats->pluck('ip_request')->unique()->count(),
+            'top_referrer' => $top_referrer,
+            'accesses_last_10_days' =>  [
+                'date' => now()->addDays(-10)->format('Y-m-d'),
+                'total' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->count(),
+                'unique' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->pluck('ip_request')->unique()->count(),
+             ],
         ];
 
-        $unique_ips = $stats->pluck('ip_request')->unique()->count();
-        $total_accesses = $stats->count();
-
-        return response()->json([
-            'total_accesses' => $total_accesses,
-            'unique_ips' => $unique_ips,
-            'top_referrer' => $top_referrer,
-            'accesses_last_10_days' => $accesses_last_10_days,
-        ]);
+        return response()->json($response);
         
     }
     public function showLogs(Redirect $redirect){
 
-        $redirect_log = RedirectLog::where('redirect_id', $redirect->id)->with('Redirect')->first();
+        $redirect_log = RedirectLog::where('redirect_id', $redirect->id)
+        ->with(['Redirect', 'queryParamsRequests'])
+        ->get();
 
-        return view('redirects.redirect_logs', compact('redirect_log'));
+        return response()->json($redirect_log->toArray(), 200, [], JSON_PRETTY_PRINT);
+
   }
 }
