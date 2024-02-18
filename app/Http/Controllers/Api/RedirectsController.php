@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Redirect;
 use App\Models\RedirectLog;
+use App\Http\Requests\ValidateRedirect;
 
 class RedirectsController extends Controller
 {
@@ -23,14 +24,19 @@ class RedirectsController extends Controller
         return view('redirects.create');
     }
 
-    public function store(Request $request)
+    public function store(ValidateRedirect $request)
     {
-        $redirect = new Redirect;
-        $redirect->url_destino = $request->url_destino;
-        $redirect->save();
-        return response()->json([
-            'status' => 'succces',
-        ], Response::HTTP_OK);
+
+           
+            $redirect = new Redirect;
+            $redirect->url_destino = $request->input('url_destino');
+            $redirect->save();
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Redirect created successfully.',
+            ], Response::HTTP_CREATED);
+    
     }
 
 

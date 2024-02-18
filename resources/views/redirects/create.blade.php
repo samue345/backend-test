@@ -8,7 +8,7 @@
 <body>
     <form action="{{ route('redirects.store') }}" method="POST">
        @csrf
-      <input type="text" name="url_destino" placeholder="digite a url de destino" required >
+      <input type="text" name="url_destino" id="url_destino" placeholder="digite a url de destino" required >
         <button type="submit">Criar redirect</button>
     </form>
     
