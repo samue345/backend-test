@@ -33,19 +33,27 @@ class RedirectsController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function show(RedirectLog $redirect)
-    {
-        return view('redirects.show', compact('redirect'));
-    }
 
-    public function edit(RedirectLog $redirect)
+    public function edit(Redirect $redirect)
     {
         return view('redirects.edit', compact('redirect'));
     }
 
-    public function update(Request $request, RedirectLog $redirect)
+    public function update(Request $request, Redirect $redirect)
     {
-        // Lógica para atualizar o registro
+
+        if($request->status !== null)
+         $redirect->status = $request->status;
+    
+        if($request->url_destino)
+         $redirect->url_destino = $request->url_destino;
+
+        $redirect->save();
+
+        return response()->json([
+            'status' => 'succces',
+        ], Response::HTTP_OK);
+    
     }
 
     public function destroy(RedirectLog $redirect)
