@@ -19,9 +19,25 @@ class RedirectController extends Controller
         $request_log->header_refer = $request->headers->get('referer');
         $request_log->date_access = now();
         $request_log->save();
-        $parsedUrl = parse_url($redirect->url_destino);
-        $urlRedirect = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'];
+        
 
+        $parsed_redirect_url = parse_url($redirect->url_destino);
+    
+        $merged_query_params = array_merge(
+            isset($parsed_redirect_url['query']) ? parse_str($parsed_redirect_url['query']) : [],
+            $request->query() ?? []
+        );
+    
+        $filtered_query_Params = array_filter($merged_query_params, function ($value) {
+            return $value !== null && $value !== '';
+        });
+    
+        $urlRedirect = $parsed_redirect_url['scheme'] . '://' . $parsed_redirect_url['host'] . $parsed_redirect_url['path'];
+        
+        if (!empty($filtered_query_Params)) 
+            $urlRedirect .= '?' . http_build_query($filtered_query_Params);
+        
+    
 
         return redirect()->to($urlRedirect);
 
