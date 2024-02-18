@@ -13,25 +13,33 @@
         a:hover{
             color: #ccc
         }
+        .flex{
+            display:flex;
+        }
     </style>
 </head>
 <body>
     <article>
         <h1>Listagem de redirects</h1>
         @foreach ($registers_redirects as $redirect)
-        <a href="{{ route('r.redirect', $redirect->code) }}">
+        <a  href="{{ route('r.redirect', $redirect->code) }}">
         <section>
-            <p>Código: {{ $redirect->code }}</p>
-            <p>Status: {{ $redirect->status }}</p>
-            <p>Data de Atualização: {{ $redirect->updated_at }}</p>
-            <p>Data de Criação: {{ $redirect->created_at }}</p>
-            <p>Data de Acesso: {{ $redirect->date_access }}</p>
-            <p>URL de Destino: {{ $redirect->url_destino }}</p>
-            <hr> 
+                <p>Código: {{ $redirect->code }}</p>
+                <p>Status: {{ $redirect->status }}</p>
+                <p>Data de Atualização: {{ $redirect->updated_at }}</p>
+                <p>Data de Criação: {{ $redirect->created_at }}</p>
+                <p>Data de Acesso: {{ $redirect->date_access }}</p>
+                <p>URL de Destino: {{ $redirect->url_destino }}</p>
        </section>
        </a>
-       @endforeach
+       <footer class="flex">
+        <button><a href="{{ route('redirects.stats', $redirect->code) }}">Estatísticas</a></button>
+        <button><a href="{{ route('redirects.logs', $redirect->code) }}">Logs</a></button>
+       </footer>
+       <hr> 
+       
 
+       @endforeach
     </article>
     
 </body>

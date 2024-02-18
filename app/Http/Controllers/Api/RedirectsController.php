@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Redirect;
+use App\Models\RedirectLog;
 
 class RedirectsController extends Controller
 {
@@ -52,46 +53,39 @@ class RedirectsController extends Controller
         return $redirect;
         // Lógica para excluir o registro
     }
-    public function showStats(RedirectLog $redirect)
+    public function showStats(Redirect $redirect)
     {
-        $total_accesses = $redirect->count();
-        $unique_ips = $redirect->distinct('ip_request')->count('ip_request');
 
-        
-        return $redirect;        
-        /*
-        $top_referrer = $redirect->select('header_refer', DB::raw('count(*) as count'))
-        ->orderByDesc('count')
-        ->groupBy('header_refer')
-        ->first();
-
-
-        $accesses_last_10days = $redirect->select(
-            DB::raw('DATE(date_access) as date'),
-            DB::raw('count(*) as total'),
-            DB::raw('count(DISTINCT ip_request) as unique_ips')
-        )
-        ->where('date_access', '>=', now()->subDays(10)->toDateString())
-        ->groupBy('date')
-        ->orderBy('date')
-        ->get();
-        */
-
-        return response()->json([
-            'total_accesses' => $total_accesses,
-            'unique_ips' => $unique_ips,
-            'top_referrers' => $top_referrer,
-
-        
-        ]);
-        
-        //return view('nome_da_sua_view', compact('total_accesses', 'unique_ips', 'top_referrers', 'accesses_last_10_days'));
-
-        
     
-    }
-    public function showLogs(RedirectLog $redirect){
+        $stats = RedirectLog::select('id', 'redirect_id', 'ip_request', 'user_agent', 'date_access', 'header_refer')
+        ->where('redirect_id', $redirect->id)
+        ->with('Redirect')
+        ->get();
 
-        return view('redirect_logs', compact('redirect'));
+        $grouped = $stats->groupBy('header_refer');
+        $top_referrer = optional($grouped->map->first())->sortByDesc('count')->first();
+        $top_referrer = optional($top_referrer)->header_refer;
+
+
+        $accesses_last_10_days = [
+            [
+               'date' => now()->addDays(-10)->format('Y-m-d'),
+               'total' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->count(),
+               'unique' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->pluck('ip_request')->unique()->count(),
+           ],
+        ];
+
+        $unique_ips = $stats->pluck('ip_request')->unique()->count();
+        $total_accesses = $stats->count();
+
+
+         return view('nome_da_sua_view', compact('total_accesses', 'unique_ips', 'top_referrer', 'accesses_last_10_days'));
+        
+    }
+    public function showLogs(Redirect $redirect){
+
+        $redirect_log = RedirectLog::where('redirect_id', $redirect->id)->with('Redirect')->first();
+
+        return view('redirects.redirect_logs', compact('redirect_log'));
   }
 }
