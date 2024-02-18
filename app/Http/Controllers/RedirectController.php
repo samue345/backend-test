@@ -14,43 +14,41 @@ class RedirectController extends Controller
 {
     public function createRedirect(Request $request, Redirect $redirect)
     {
-        $parsedRedirectUrl = parse_url($redirect->url_destino);
-        $existingQueryParams = [];
+        $parsed_url_destino = parse_url($redirect->url_destino);
 
+        $existing_query_params = $parsed_url_destino['query'] ?? '';
+        parse_str($existing_query_params, $existing_query_params);
 
-        if (isset($parsedRedirectUrl['query'])) 
-            parse_str($parsedRedirectUrl['query'], $existingQueryParams);
-        
-    
-        $mergedQueryParams = array_merge(
-            $existingQueryParams,
-            $request->query() ?? []
+        $merged_params = array_merge(
+            $existing_query_params,
+            array_filter($request->query() ?? [])
         );
-    
-        $filteredQueryParams = array_filter($mergedQueryParams, function ($value) {
-            return $value !== null && $value !== '';
-        });
-    
-        $urlRedirect = $parsedRedirectUrl['scheme'] . '://' . $parsedRedirectUrl['host'] . $parsedRedirectUrl['path'];
-    
-        if (!empty($filteredQueryParams)) 
-            $urlRedirect .= '?' . http_build_query($filteredQueryParams);
+
+        $filter_params = array_filter($merged_params, fn($value) => $value !== null && $value !== '');
+
+        $url_destino = $parsed_url_destino['scheme'] . '://' . $parsed_url_destino['host'] . ($parsed_url_destino['path'] ?? '');
+
+        if (!empty($filter_params)) 
+            $url_destino .= '?' . http_build_query($filter_params);
         
-        try {
-            
+
+        try 
+        {
+
             DB::beginTransaction();
-            $this->logRedirectRequest($request, $redirect, $mergedQueryParams);
+            $this->logRedirectRequest($request, $redirect, $merged_params);
             DB::commit();
+
         } 
-        catch (\Exception $e) {
+        catch (\Exception $e) 
+        {
             DB::rollBack();
             throw $e;
         }
-        
-    
 
-        return redirect()->to($urlRedirect);
+        return redirect()->to($url_destino);
     }
+
     
     private function logRedirectRequest(Request $request, Redirect $redirect, array $queryParameters)
     {

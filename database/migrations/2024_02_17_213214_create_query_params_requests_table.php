@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('key');
             $table->string('value');
             $table->foreign('redirectlog_id')->references('id')->on('redirect_logs')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

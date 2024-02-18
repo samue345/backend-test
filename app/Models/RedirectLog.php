@@ -17,7 +17,7 @@ class RedirectLog extends Model
         'date_access',
     ];
 
-    public $timestamps = false;  // Correção aqui
+    public $timestamps = false;  
 
     public function Redirect(){
         return $this->belongsTo(Redirect::class);

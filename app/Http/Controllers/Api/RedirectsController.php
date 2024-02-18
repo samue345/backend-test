@@ -89,18 +89,19 @@ class RedirectsController extends Controller
 
 
         $response = [
-
-            'total_accesses' => $stats->count(),
-            'unique_ips' => $stats->pluck('ip_request')->unique()->count(),
-            'top_referrer' => $top_referrer,
-            'accesses_last_10_days' =>  [
-                'date' => now()->addDays(-10)->format('Y-m-d'),
-                'total' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->count(),
-                'unique' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->pluck('ip_request')->unique()->count(),
-             ],
+            [
+                'total_accesses' => $stats->count(),
+                'unique_ips' => $stats->pluck('ip_request')->unique()->count(),
+                'top_referrer' => $top_referrer,
+                'accesses_last_10_days' =>  [
+                    'date' => now()->addDays(-10)->format('Y-m-d'),
+                    'total' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->count(),
+                    'unique' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->pluck('ip_request')->unique()->count(),
+                ],
+            ]
         ];
 
-        return response()->json($response);
+        return response()->json($response, 200, [], JSON_PRETTY_PRINT);
         
     }
     public function showLogs(Redirect $redirect){
