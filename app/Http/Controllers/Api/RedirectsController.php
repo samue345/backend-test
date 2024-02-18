@@ -67,6 +67,7 @@ class RedirectsController extends Controller
         $top_referrer = optional($top_referrer)->header_refer;
 
 
+
         $accesses_last_10_days = [
             [
                'date' => now()->addDays(-10)->format('Y-m-d'),
@@ -78,8 +79,12 @@ class RedirectsController extends Controller
         $unique_ips = $stats->pluck('ip_request')->unique()->count();
         $total_accesses = $stats->count();
 
-
-         return view('nome_da_sua_view', compact('total_accesses', 'unique_ips', 'top_referrer', 'accesses_last_10_days'));
+        return response()->json([
+            'total_accesses' => $total_accesses,
+            'unique_ips' => $unique_ips,
+            'top_referrer' => $top_referrer,
+            'accesses_last_10_days' => $accesses_last_10_days,
+        ]);
         
     }
     public function showLogs(Redirect $redirect){
