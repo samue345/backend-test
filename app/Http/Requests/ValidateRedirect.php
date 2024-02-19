@@ -51,8 +51,13 @@ class ValidateRedirect extends FormRequest
             'url_destino' => [
                 'required',
                 'url',
-                'starts_with:https',
-                'doesnt_start_with:' . config('app.url')
+                'regex:/^https:/',
+                function ($attribute, $value, $fail) {
+                    $appUrl = config('app.url');
+                    if (strpos($value, $appUrl) === 0) 
+                        $fail('A URL de destino não pode apontar para a própria aplicação.');
+                },
+                
             ],
         ];
     }
@@ -61,9 +66,9 @@ class ValidateRedirect extends FormRequest
     {
         return [
             'url_destino.required' => 'O campo URL de destino é obrigatório.',
-            'url_destino.url' => 'Por favor, insira uma URL válida.',
-            'url_destino.starts_with' => 'A url tem que começarf com https',
-            'url_destino.doesnt_start_with:' => 'A url não pode apontar pra própria aplicação.'
+            'url_destino.regex' => 'A url tem que começar com https',
+            'url_destino' => 'A url não pode apontar pra própria aplicação.'
+            
         ];
     }
 

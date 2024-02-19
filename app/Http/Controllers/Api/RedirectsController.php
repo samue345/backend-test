@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Models\Redirect;
 use App\Models\RedirectLog;
 use App\Http\Requests\ValidateRedirect;
+use Illuminate\Support\Facades\Http;
+
 
 class RedirectsController extends Controller
 {
@@ -33,10 +35,33 @@ class RedirectsController extends Controller
 
     public function store(ValidateRedirect $request)
     {
+    
+           $url_destino= $request->input('url_destino');
            
+            $dns = gethostbyname(parse_url($url_destino, PHP_URL_HOST));
+
+            if (!filter_var($dns, FILTER_VALIDATE_IP)) {
+                return redirect()
+                    ->route('redirects.create')
+                    ->withErrors([
+                        'url_destino' => 'DNS inválido.',
+                    ]);
+            }
+            
+            if (!Http::get($url_destino)->ok()) 
+            {
+                return redirect()
+                    ->route('redirects.create')
+                    ->withErrors([
+                        'url_destino' => 'A URL apresenta algum erro.',
+                    ]);
+            }
+        
             $redirect = new Redirect;
-            $redirect->url_destino = $request->input('url_destino');
+            $redirect->url_destino = $request->get('url_destino');
             $redirect->save();
+
+
     
             return response()->json([
                 'status' => 'success',
@@ -94,7 +119,7 @@ class RedirectsController extends Controller
 
 
         $response = [
-            [
+            
                 'total_accesses' => $stats->count(),
                 'unique_ips' => $stats->pluck('ip_request')->unique()->count(),
                 'top_referrer' => $top_referrer,
@@ -103,7 +128,7 @@ class RedirectsController extends Controller
                     'total' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->count(),
                     'unique' => $stats->where('date_access', '>=', now()->addDays(-10)->format('Y-m-d H:i:s'))->pluck('ip_request')->unique()->count(),
                 ],
-            ]
+            
         ];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
