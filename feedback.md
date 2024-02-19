@@ -22,16 +22,16 @@ Esse documento visa coletar feedbacks sobre o teste de desenvolvimento. Desde o 
 ## Após o Teste
 
 1 - O que você achou do teste?
-> Resposta
+> Achei o teste interressante, tive algumas dúvidas sobre implementação que me tomaram algum tempo, mas no geral não foi tão dificil 
 
 2 - Levou mais ou menos tempo do que você esperava?
-> Resposta
+> Foi o que eu esperava.
 
 3 - Teve imprevistos? Quais?
-> Resposta
+> Sim, a parte do redicionamento, eu achava de inicio você não precisava instanciar o model por injeção de dependência e eu só percebi que era necessario depois, isso tomou muito meu tempo, tive que mudar bastante coisa e acabou que eu não fiz tudo que eu queria.
 
 4 - Existem pontos que você gostaria de ter melhorado?
-> Resposta
+> Queria ter melhorado nois testes.
 
 5 - Quais falhas você encontrou na estrutura do projeto?
-> Resposta
+> nada em especifico

@@ -110,5 +110,44 @@ class RedirectStasTest extends TestCase
             ],
         ]);
     }
+    public function test_merge_query_preference_request()
+    {
+        $redirect = Redirect::factory()->create([
+            'url_destino' => 'https://marcola.com/?utm_source=youtube&utm_campaign=ads',
+            'status' => 1
+        ]);
+    
+        $response = $this->get(route('r.redirect', $redirect->code) . '?utm_source=instagram');
+    
+        $url = explode('?', $redirect->url_destino)[0];
+    
+        $response->assertRedirect($url . '?utm_source=instagram&utm_campaign=ads');
+    }
+
+    public function test_merge_query_two_origins()
+    {
+        $redirect = Redirect::factory()->create([
+            'url_destino' => 'https://marcola.com/?utm_campaign=marketing',
+        ]);
+    
+        $response = $this->get(route('r.redirect', $redirect->code) . '?utm_source=twitter');
+    
+        $url_result = explode('?', $redirect->url_destino)[0];
+    
+        $response->assertRedirect($url_result . '?utm_campaign=marketing&utm_source=twitter');
+    }
+    
+    public function test_merge_ignore_null_key()
+    {
+        $redirect = Redirect::factory()->create([
+            'url_destino' => 'https://marcola.org/?utm_source=twitter',
+        ]);
+    
+        $response = $this->get(route('r.redirect', $redirect->code) . '?utm_source=&utm_campaign=marketing');
+    
+        $url_result = explode('?', $redirect->url_destino)[0];
+    
+        $response->assertRedirect($url_result . '?utm_source=twitter&utm_campaign=marketing');
+    }
 
 }

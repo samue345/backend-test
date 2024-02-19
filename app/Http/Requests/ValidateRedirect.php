@@ -15,27 +15,7 @@ class ValidateRedirect extends FormRequest
     {
         return true;
     }
-    protected function prepareForValidation()
-    {
-        $parseUrl = parse_url($this->get('url_destino'));
-
-        if (isset($parseUrl['query']) && !is_null($parseUrl['query'])) {
-            parse_str($parseUrl['query'], $queryParams);
-
-            $params = [];
-
-            foreach ($queryParams as $key => $value) {
-                $params[] = [
-                    'key' => $key,
-                    'value' => $value,
-                ];
-            }
-        } else {
-            $params = null;
-        }
-
-        $this->merge(['query_params' => $params]);
-    }
+   
 
     /**
      * Get the validation rules that apply to the request.
@@ -67,7 +47,7 @@ class ValidateRedirect extends FormRequest
         return [
             'url_destino.required' => 'O campo URL de destino é obrigatório.',
             'url_destino.regex' => 'A url tem que começar com https',
-            'url_destino' => 'A url não pode apontar pra própria aplicação.'
+            'url_destino' => 'A url não pode apontar pra própria aplicação.',
             
         ];
     }
