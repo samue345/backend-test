@@ -38,7 +38,12 @@
         <button><a href="{{ route('redirects.stats', $redirect->code) }}">Estatísticas</a></button>
         <button><a href="{{ route('redirects.logs', $redirect->code) }}">Logs</a></button>
         <button><a href="{{ route('redirects.edit', $redirect->code) }}">atualizar</a></button>
-        <button>Deletar</button>
+        <form action="{{ route('redirects.destroy', $redirect->code) }}" method="POST">  
+            @csrf
+            @method('DELETE')
+
+           <button type="submit">Deletar</button>
+        </form>
        </footer>
        <hr> 
        

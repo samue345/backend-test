@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::resource('redirects', RedirectsController::class);
+Route::resource('redirects', RedirectsController::class)->except('show');
 
 
 Route::prefix('redirects')->group(function () {

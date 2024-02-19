@@ -22,7 +22,7 @@ class RedirectsController extends Controller
          DB::raw('MAX(redirect_logs.date_access) as max_date_access'))
         ->groupBy('redirects.id', 'status', 'updated_at', 'created_at', 'url_destino')
         ->get();
-        
+
          return view('redirects.listagem_redirects', compact('registers_redirects'));
     }
 
@@ -33,7 +33,6 @@ class RedirectsController extends Controller
 
     public function store(ValidateRedirect $request)
     {
-
            
             $redirect = new Redirect;
             $redirect->url_destino = $request->input('url_destino');
@@ -71,7 +70,6 @@ class RedirectsController extends Controller
 
     public function destroy(Redirect $redirect)
     {
-        return $redirect;
         
         if($redirect->status !== 0)
         {
@@ -79,7 +77,8 @@ class RedirectsController extends Controller
             $redirect->save();
             $redirect->delete();     
         }
-        $redirect->save();
+        return response()->json('deleted');
+
 
     }
     public function showStats(Redirect $redirect)
