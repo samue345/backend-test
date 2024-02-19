@@ -15,8 +15,15 @@ class RedirectsController extends Controller
 
     public function index()
     {
-        $registers_redirects = Redirect::select('id', 'status', 'updated_at', 'created_at',  'url_destino')->get();
-        return view('redirects.listagem_redirects', compact('registers_redirects'));
+      
+
+        $registers_redirects = Redirect::leftJoin('redirect_logs', 'redirects.id', '=', 'redirect_logs.redirect_id')
+        ->select('redirects.id', 'status', 'updated_at', 'created_at', 'url_destino', 
+         DB::raw('MAX(redirect_logs.date_access) as max_date_access'))
+        ->groupBy('redirects.id', 'status', 'updated_at', 'created_at', 'url_destino')
+        ->get();
+        
+         return view('redirects.listagem_redirects', compact('registers_redirects'));
     }
 
     public function create()
@@ -78,7 +85,6 @@ class RedirectsController extends Controller
     public function showStats(Redirect $redirect)
     {
 
-    
         $stats = RedirectLog::select('id', 'redirect_id', 'ip_request', 'user_agent', 'date_access', 'header_refer')
         ->where('redirect_id', $redirect->id)->with('Redirect')
         ->get();
@@ -102,6 +108,7 @@ class RedirectsController extends Controller
         ];
 
         return response()->json($response, 200, [], JSON_PRETTY_PRINT);
+    
         
     }
     public function showLogs(Redirect $redirect){

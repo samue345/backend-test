@@ -20,6 +20,8 @@
 </head>
 <body>
     <article>
+       
+    
         <h1>Listagem de redirects</h1>
         @foreach ($registers_redirects as $redirect)
         <a  href="{{ route('r.redirect', $redirect->code) }}">
@@ -28,7 +30,7 @@
                 <p>Status: {{ $redirect->status }}</p>
                 <p>Data de Atualização: {{ $redirect->updated_at }}</p>
                 <p>Data de Criação: {{ $redirect->created_at }}</p>
-                <p>Data de Acesso: {{ $redirect->date_access }}</p>
+                <p>Data de Acesso:  {{ $redirect->max_date_access }}</p>
                 <p>URL de Destino: {{ $redirect->url_destino }}</p>
        </section>
        </a>

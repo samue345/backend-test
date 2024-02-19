@@ -23,4 +23,6 @@ class Redirect extends Model
      public function redirectLogs(){
         return $this->hasMany(RedirectLog::class);
     }
+
+ 
 }
